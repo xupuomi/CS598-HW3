@@ -19,3 +19,5 @@
 # Compiled handouts
 /handout/*.pdf
 perf.data
+sandpile.exe
+identity.png
