@@ -18,6 +18,6 @@
 
 # Compiled handouts
 /handout/*.pdf
-perf.data
+perf.data*
 sandpile.exe
 identity.png
