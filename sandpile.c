@@ -80,18 +80,18 @@ static void stabilize() {
       for (int j = 0; j <= MAX(i, N - 1 - i); ++j) {
         if ((i - N / 2) * (i - N / 2) + (j - N / 2) * (j - N / 2) <=
             (N / 2) * (N / 2)) {
-          if (grid[i][j] < 4)
-            continue;
+          int topple_cnt = grid[i][j] / 4;
+          if (topple_cnt == 0) continue;
           changed = 1; // topple it
-          grid[i][j] -= 4;
+          grid[i][j] -= 4 * topple_cnt;
           if (i > 0)
-            grid[i - 1][j]++;
+            grid[i - 1][j] += topple_cnt;
           if (j > 0)
-            grid[i][j - 1]++;
+            grid[i][j - 1] += topple_cnt;
           if (i < N - 1)
-            grid[i + 1][j]++;
+            grid[i + 1][j] += topple_cnt;
           if (j < N - 1)
-            grid[i][j + 1]++;
+            grid[i][j + 1] += topple_cnt;
         }
       }
     }

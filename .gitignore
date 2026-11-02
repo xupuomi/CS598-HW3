@@ -18,3 +18,4 @@
 
 # Compiled handouts
 /handout/*.pdf
+perf.data
