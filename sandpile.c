@@ -91,10 +91,11 @@ static void stabilize() {
       }
     }
   }
+  int M = N / 2;
   int changed = 0;
   do {
     changed = 0;
-    for (int i = 0; i < N; ++i) {
+    for (int i = 0; i <= M; ++i) {
       for (int j = first_col[i]; j <= last_col[i]; ++j) {
         int topple_cnt = grid[i][j] / 4;  // total number of times its gonna need to be toppled
         if (topple_cnt == 0) continue;
@@ -104,8 +105,10 @@ static void stabilize() {
           grid[i - 1][j] += topple_cnt;
         if (j > 0)
           grid[i][j - 1] += topple_cnt;
-        if (i < N - 1)
+        if (i < M - 1)
           grid[i + 1][j] += topple_cnt;
+        else if (i == M - 1) 
+          grid[i + 1][j] += 2 * topple_cnt;
         if (j < N - 1)
           grid[i][j + 1] += topple_cnt;
       }
@@ -116,18 +119,22 @@ static void stabilize() {
 }
 
 void find_identity() {
+  int M = N / 2;
   for (int i = 0; i < N; ++i) {
     for (int j = 0; j < N; ++j) {
       grid[i][j] = 6;
     }
   }
   stabilize();
-  for (int i = 0; i < N; ++i) {
+  for (int i = 0; i <= M; ++i) {
     for (int j = 0; j < N; ++j) {
       grid[i][j] = 6 - grid[i][j];
     }
   }
   stabilize();
+  for (int i = 0; i < M; ++i) {
+    memcpy(grid[N-1-i], grid[i], N*sizeof(int));
+  }
 }
 
 int main(int argc, char **argv) {
