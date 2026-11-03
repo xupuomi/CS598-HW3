@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
+#include <stdbool.h>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -73,29 +74,45 @@ static void render(char *filename) {
 }
 
 static void stabilize() {
+  int *first_col = (int*)malloc(N * sizeof(int));
+  int *last_col = (int*)malloc(N * sizeof(int));
+  for (int i = 0; i < N; ++i) {
+    bool found = false;
+    first_col[i] = 1;
+    last_col[i] = 0;
+    for (int j = 0; j <= MAX(i, N - 1 - i); ++j) {
+      if ((i - N / 2) * (i - N / 2) + (j - N / 2) * (j - N / 2) <=
+          (N / 2) * (N / 2)) {
+        if (found == false) {
+          first_col[i] = j;
+          found = true;
+        }
+        last_col[i] = j;
+      }
+    }
+  }
   int changed = 0;
   do {
     changed = 0;
     for (int i = 0; i < N; ++i) {
-      for (int j = 0; j <= MAX(i, N - 1 - i); ++j) {
-        if ((i - N / 2) * (i - N / 2) + (j - N / 2) * (j - N / 2) <=
-            (N / 2) * (N / 2)) {
-          int topple_cnt = grid[i][j] / 4;
-          if (topple_cnt == 0) continue;
-          changed = 1; // topple it
-          grid[i][j] -= 4 * topple_cnt;
-          if (i > 0)
-            grid[i - 1][j] += topple_cnt;
-          if (j > 0)
-            grid[i][j - 1] += topple_cnt;
-          if (i < N - 1)
-            grid[i + 1][j] += topple_cnt;
-          if (j < N - 1)
-            grid[i][j + 1] += topple_cnt;
-        }
+      for (int j = first_col[i]; j <= last_col[i]; ++j) {
+        int topple_cnt = grid[i][j] / 4;  // total number of times its gonna need to be toppled
+        if (topple_cnt == 0) continue;
+        changed = 1; // topple it
+        grid[i][j] %= 4;
+        if (i > 0)
+          grid[i - 1][j] += topple_cnt;
+        if (j > 0)
+          grid[i][j - 1] += topple_cnt;
+        if (i < N - 1)
+          grid[i + 1][j] += topple_cnt;
+        if (j < N - 1)
+          grid[i][j + 1] += topple_cnt;
       }
     }
   } while (changed);
+  free(first_col);
+  free(last_col);
 }
 
 void find_identity() {
