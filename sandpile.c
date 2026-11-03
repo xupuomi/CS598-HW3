@@ -143,16 +143,15 @@ int main(int argc, char **argv) {
   N = (int)parsed;
 
   grid = (int **)malloc(N * sizeof(int *));
+  int *block = (int*)malloc((size_t)N * N * sizeof(int));
   for (int i = 0; i < N; ++i) {
-    grid[i] = (int *)malloc(N * sizeof(int));
+    grid[i] = block + (size_t)i * N;
   }
 
   find_identity();
 
   render("identity.png");
-  for (int i = 0; i < N; ++i) {
-    free(grid[i]);
-  }
+  free(grid[0]);
   free(grid);
   return EXIT_SUCCESS;
 }
