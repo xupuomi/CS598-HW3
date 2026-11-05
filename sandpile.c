@@ -93,11 +93,14 @@ static void stabilize() {
   }
   int M = N / 2;
   int changed = 0;
+  int forward = 1;
   do {
     changed = 0;
-    for (int i = 0; i <= M; ++i) {
-      for (int j = first_col[i]; j <= last_col[i]; ++j) {
-        int topple_cnt = grid[i][j] / 4;  // total number of times its gonna need to be toppled
+    for (int k = 0; k <= M; ++k) {
+      int i = forward ? k : M - k;
+      for (int l = first_col[i]; l <= last_col[i]; ++l) {
+        int j = forward ? l : first_col[i] + last_col[i] - l;
+        int topple_cnt = grid[i][j] >> 2;  // total number of times its gonna need to be toppled
         if (topple_cnt == 0) continue;
         changed = 1; // topple it
         grid[i][j] %= 4;
@@ -113,10 +116,12 @@ static void stabilize() {
           grid[i][j + 1] += topple_cnt;
       }
     }
+    forward = !forward;
   } while (changed);
   free(first_col);
   free(last_col);
 }
+
 
 void find_identity() {
   int M = N / 2;
